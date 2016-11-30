@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<hardware>
+    <sleeposc enable="true" ppm="30" />
+    <sleep enable="false" />
+    <usb enable="false" />
+    <txpower power="15" bias="5" />
+    <script enable="true" />
+    <timer_ticks speed="2" />
+	<port index="0" tristatemask="ff" pull="down" />
+	<port index="1" tristatemask="ff" pull="down" />
+	<port index="2" tristatemask="ff" pull="down" />
+</hardware>

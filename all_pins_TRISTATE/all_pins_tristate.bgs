@@ -1,0 +1,19 @@
+#Send HIGH and then LOW signal (1sec interval loop) on all pins p0_0-p0_7 and p1_0-p1_7
+
+dim pin_state
+# Boot event listener
+event system_boot(major, minor, patch, build, ll_version, protocol_version, hw)
+# Configure p0_0-p0_7 as output (port=0, pin mode mask = 0b11111111)
+#call hardware_io_port_config_direction(0, $FF)
+# Configure p1_0-p1_7 as output (port=1, pin mode mask = 0b11111111)
+#call hardware_io_port_config_direction(1, $FF)
+
+# Set current pin state to "on" (1)
+pin_state = 1
+# Start a 1-second repeating timer
+call hardware_set_soft_timer(32768, 0, 0)
+end
+# Soft timer event listener
+event hardware_soft_timer(handle)
+
+end

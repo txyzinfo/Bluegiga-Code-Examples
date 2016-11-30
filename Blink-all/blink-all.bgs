@@ -1,0 +1,41 @@
+#Send HIGH and then LOW signal (1sec interval loop) on all pins p0_0-p0_7 and p1_0-p1_7
+
+dim pin_state
+# Boot event listener
+event system_boot(major, minor, patch, build, ll_version, protocol_version, hw)
+# Configure p0_0-p0_7 as output (port=0, pin mode mask = 0b11111111)
+call hardware_io_port_config_direction(0, $FF)
+# Configure p1_0-p1_7 as output (port=1, pin mode mask = 0b11111111)
+call hardware_io_port_config_direction(1, $FF)
+
+# Set all pins p0_0-p0_7 and p1_0-p1_7 HIGH
+# (port=0, pin selection mask = 0b11111111, pin logic mask = 0b11111111)
+# NOTE: logic value parameter is also a bitmask, not a single 0/1 to apply to all selected pins
+call hardware_io_port_write(0, $FF, $FF)
+# (port=1, pin selection mask = 0b11111111, pin logic mask = 0b11111111)
+call hardware_io_port_write(1, $FF, $FF)
+
+# Set current pin state to "on" (1)
+pin_state = 1
+# Start a 1-second repeating timer
+call hardware_set_soft_timer(32768, 0, 0)
+end
+# Soft timer event listener
+event hardware_soft_timer(handle)
+# When timer expires (repeatedly), set P0_0 pin LOW or HIGH depending on
+# previous state and then update "pin_state" to opposite of what it was
+if pin_state = 0 then
+# p0_0-p0_7 and p1_0-p1_7 was LOW, now set HIGH
+# (port=0, pin selection mask = 0b11111111, pin logic mask = 0b11111111)
+call hardware_io_port_write(0, $FF, $FF)
+# (port=1, pin selection mask = 0b11111111, pin logic mask = 0b11111111)
+call hardware_io_port_write(1, $FF, $FF)
+else
+# p0_0-p0_7 and p1_0-p1_7 was HIGH, now set LOW
+# (port=0, pin selection mask = 0b11111111, pin logic mask = 0b00000000)
+call hardware_io_port_write(0, $FF, $00)
+# (port=0, pin selection mask = 0b11111111, pin logic mask = 0b00000000)
+call hardware_io_port_write(1, $FF, $00)
+end if
+pin_state = 1 - pin_state
+end
